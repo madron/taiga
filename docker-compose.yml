@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:9.5
+    network_mode: default
+
+  back:
+    image: quay.io/madron/taiga
+    network_mode: default
+    depends_on:
+      - db
+    links:
+      - 'db:db'
+    command: uwsgi
+
+  back:
+    image: quay.io/madron/taiga
+    network_mode: default
+    depends_on:
+      - back
+    links:
+      - 'back:back'
+    ports:
+      - '80:80/tcp'
+    command: nginx
