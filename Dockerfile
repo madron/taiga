@@ -35,6 +35,9 @@ COPY settings.py /src/settings/local.py
 RUN python3 /src/manage.py collectstatic --link --noinput --verbosity=0
 RUN python3 /src/manage.py compilemessages --verbosity=0
 
+# Fix
+RUN sed -i 's|ng-href="::vm.item.external_reference\[1\]"|ng-href="{{::vm.item.external_reference\[1\]}}"|' /front/dist/v-1475257132248/js/templates.js
+RUN sed -i 's|<span>{{ ::vm.item.external_reference\[1\] }}</span>|<span> {{ ::vm.item.external_reference\[0\] }}</span>|' /front/dist/v-1475257132248/js/templates.js
 
 COPY entrypoint.sh /entrypoint.sh
 COPY default.conf /etc/nginx/conf.d/default.conf
