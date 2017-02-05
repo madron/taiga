@@ -2,21 +2,29 @@ version: '2'
 
 services:
   db:
-    image: postgres:9.5
+    image: postgres:9.6
     network_mode: default
+    volumes:
+      - db:/var/lib/postgresql/data
 
   back:
     image: quay.io/madron/taiga
     network_mode: default
+    volumes:
+      - media:/media
     depends_on:
       - db
     links:
       - 'db:db'
     command: uwsgi
 
-  back:
+  front:
     image: quay.io/madron/taiga
     network_mode: default
+    volumes:
+      - media:/media
+    environment:
+      - TAIGA_FRONT_URL={{ taiga_front_url }}
     depends_on:
       - back
     links:
@@ -24,3 +32,10 @@ services:
     ports:
       - '80:80/tcp'
     command: nginx
+
+
+volumes:
+  db:
+    driver: local
+  media:
+    driver: local
