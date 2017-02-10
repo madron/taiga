@@ -8,25 +8,21 @@ services:
       - db:/var/lib/postgresql/data
 
   back:
-    image: quay.io/madron/taiga
+    build: .
     network_mode: default
     volumes:
       - media:/media
-    depends_on:
-      - db
     links:
       - 'db:db'
-    command: uwsgi
+    command: uwsgi --plugins /usr/lib/uwsgi/python3_plugin.so --master --processes 1 --threads 2 --chdir /src --wsgi taiga.wsgi --http-socket :8000 --stats :9191
 
   front:
-    image: quay.io/madron/taiga
+    build: .
     network_mode: default
     volumes:
       - media:/media
     environment:
-      - TAIGA_FRONT_URL={{ taiga_front_url }}
-    depends_on:
-      - back
+      - TAIGA_FRONT_URL=http://localhost
     links:
       - 'back:back'
     ports:

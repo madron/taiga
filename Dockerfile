@@ -7,11 +7,11 @@ ENV TAIGA_RELEASE=3.0.0
 
 # Source
 RUN    apk update \
-    && apk add ca-certificates \
-    && wget -O - https://github.com/taigaio/taiga-back/archive/$TAIGA_RELEASE.tar.gz | tar -x --strip-components=1 -z -f - \
+    && apk add curl openssl \
+    && curl https://codeload.github.com/taigaio/taiga-back/tar.gz/$TAIGA_RELEASE | tar -x --strip-components=1 -z -f - \
     && mkdir /front \
-    && wget -O - https://github.com/taigaio/taiga-front-dist/archive/$TAIGA_RELEASE-stable.tar.gz | tar -x --strip-components=1 -z -f - -C /front \
-    && apk del ca-certificates \
+    && curl https://codeload.github.com/taigaio/taiga-front-dist/tar.gz/$TAIGA_RELEASE-stable | tar -x --strip-components=1 -z -f - -C /front \
+    && apk del curl openssl \
     && rm -rf /var/cache/apk/*
 
 # Requirements
@@ -39,11 +39,11 @@ RUN python3 /src/manage.py compilemessages --verbosity=0
 RUN sed -i 's|ng-href="::vm.item.external_reference\[1\]"|ng-href="{{::vm.item.external_reference\[1\]}}"|' /front/dist/v-1475257132248/js/templates.js
 RUN sed -i 's|<span>{{ ::vm.item.external_reference\[1\] }}</span>|<span> {{ ::vm.item.external_reference\[0\] }}</span>|' /front/dist/v-1475257132248/js/templates.js
 
-COPY entrypoint.sh /entrypoint.sh
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /docker/entrypoint.sh
+COPY nginx.conf /docker/nginx.conf
 COPY conf.json /front/dist/conf.json
 ENV TAIGA_FRONT_URL=http://localhost
 
 VOLUME ["/media"]
 
-CMD ["uwsgi", "--plugins", "/usr/lib/uwsgi/python3_plugin.so", "--master", "--processes", "1", "--threads", "2", "--chdir", "/src", "--wsgi", "settings.wsgi", "--http-socket", ":8000", "--stats", ":9191"]
+CMD ["uwsgi", "--plugins", "/usr/lib/uwsgi/python3_plugin.so", "--master", "--processes", "1", "--threads", "2", "--chdir", "/src", "--wsgi", "taiga.wsgi", "--http-socket", ":8000", "--stats", ":9191"]

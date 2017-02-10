@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+echo $*
+
 if [ "$1" = 'uwsgi' ]; then
     # chown -R uwsgi:uwsgi /run/uwsgi
     chown -R uwsgi:uwsgi /media
