@@ -12,6 +12,7 @@ services:
     network_mode: default
     volumes:
       - media:/media
+      - ./settings_local.py:/src/settings/local.py:ro
     links:
       - 'db:db'
     command: uwsgi --plugins /usr/lib/uwsgi/python3_plugin.so --master --processes 1 --threads 2 --chdir /src --wsgi taiga.wsgi --http-socket :8000 --stats :9191

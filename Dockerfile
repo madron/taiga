@@ -28,12 +28,13 @@ RUN    apk update \
 
 
 # Settings
-ENV DJANGO_SETTINGS_MODULE=settings.local
-COPY settings.py /src/settings/local.py
+ENV DJANGO_SETTINGS_MODULE=settings.docker
+COPY settings_docker.py /src/settings/docker.py
 
 # Static files and translations
-RUN python3 /src/manage.py collectstatic --link --noinput --verbosity=0
-RUN python3 /src/manage.py compilemessages --verbosity=0
+RUN    touch /src/settings/local.py \
+    && python3 /src/manage.py collectstatic --link --noinput --verbosity=0 \
+    && python3 /src/manage.py compilemessages --verbosity=0
 
 # Fix
 RUN sed -i 's|ng-href="::vm.item.external_reference\[1\]"|ng-href="{{::vm.item.external_reference\[1\]}}"|' /front/dist/v-1475257132248/js/templates.js
