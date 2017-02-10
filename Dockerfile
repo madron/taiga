@@ -44,6 +44,6 @@ COPY nginx.conf /docker/nginx.conf
 COPY conf.json /front/dist/conf.json
 ENV TAIGA_FRONT_URL=http://localhost
 
-VOLUME ["/media"]
+VOLUME ["/files/media"]
 
 CMD ["uwsgi", "--plugins", "/usr/lib/uwsgi/python3_plugin.so", "--master", "--processes", "1", "--threads", "2", "--chdir", "/src", "--wsgi", "taiga.wsgi", "--http-socket", ":8000", "--stats", ":9191"]

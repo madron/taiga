@@ -13,7 +13,7 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = '/media'
-STATIC_ROOT = '/static'
+MEDIA_ROOT = '/files/media'
+STATIC_ROOT = '/files/static'
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'

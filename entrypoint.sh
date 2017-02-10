@@ -5,7 +5,7 @@ echo $*
 
 if [ "$1" = 'uwsgi' ]; then
     # chown -R uwsgi:uwsgi /run/uwsgi
-    chown -R uwsgi:uwsgi /media
+    chown -R uwsgi:uwsgi /files/media
     echo 'Migrate'
     gosu uwsgi python3 /src/manage.py migrate --noinput
     echo 'gosu uwsgi uwsgi "${@:6}"'
